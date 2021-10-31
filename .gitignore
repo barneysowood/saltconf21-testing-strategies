@@ -1,0 +1,12 @@
+# file: .gitignore
+#
+# Files and directories for git to ignore
+#
+
+# salt working files
+var/*
+etc/salt/pki/*
+etc/salt/minion_id
+
+# python virtualenv
+virtualenv/
