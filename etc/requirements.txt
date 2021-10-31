@@ -1,0 +1,6 @@
+# file: etc/requirements.txt
+#
+# Python requirements for local development
+#
+
+salt==3003.3

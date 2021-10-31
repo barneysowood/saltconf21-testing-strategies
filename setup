@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# Setup local virtualenv
+#
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+COMMAND="$(basename $0)"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+VENV="${REPO_ROOT}/virtualenv"
+
+# Colour output
+echo_info () {
+  tput setaf 2
+  echo -e "${1}"
+  tput sgr0
+}
+
+echo_error () {
+  tput setaf 1
+  echo -e "${1}"
+  tput sgr0
+}
+
+
+# Start
+echo_info "\n** Starting setup **\n"
+
+# Set virtualenv args
+VENV_ARGS="--python=python3 ${VENV}"
+
+# Check for prerequisites
+echo_info "Checking prerequisites..\n"
+which gcc >/dev/null 2>&1 || (echo_error "Please install gcc" && exit 255)
+which python3-config >/dev/null 2>&1 || (echo_error "Please install python3 development packages" && exit 255)
+
+# Check virtualenv is available
+echo_info "Checking for virtualenv..\n"
+which virtualenv >/dev/null 2>&1 || (echo_error "Please install virtualenv" && exit 255)
+
+# Create virtualenv
+echo_info "Creating virtualenv..\n"
+virtualenv ${VENV_ARGS}
+
+# Source the virtualenv (requires disabling nounset)
+set +o nounset
+source "${VENV}/bin/activate"
+set -o nounset
+
+# Install salt requirements
+echo_info "\nInstalling python packages..\n"
+pip install --upgrade --requirement "${REPO_ROOT}/etc/requirements.txt"
+
+# Finish
+echo_info "\n** Local environment is now configured **"
