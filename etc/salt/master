@@ -1,0 +1,18 @@
+# file: etc/salt/master
+#
+# Local config for salt master/minion
+#
+
+root_dir: .
+file_client: local
+
+fileserver_backend:
+  - roots
+
+file_roots:
+  base:
+    - files
+
+pillar_roots:
+  base:
+    - pillar

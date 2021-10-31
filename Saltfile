@@ -1,0 +1,8 @@
+# file: Saltfile
+#
+# Local config for salt cli tools
+#
+
+# salt-call config
+salt-call:
+  config_dir: etc/salt
