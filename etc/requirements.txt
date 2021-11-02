@@ -4,3 +4,5 @@
 #
 
 salt==3003.3
+yamllint
+salt-lint

@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Run linting
+#
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Activate the virtualenv
+set +o nounset
+source "${REPO_ROOT}/virtualenv/bin/activate"
+set -o nounset
+
+cd "${REPO_ROOT}"
+yamllint -c etc/yamllint .
+git ls-files -- '*.sls' | xargs salt-lint

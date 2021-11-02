@@ -1,0 +1,11 @@
+# file: etc/yamllint
+#
+# yamllint config
+#
+
+# Extend default config
+extends: default
+
+# Ignore virtualenv
+ignore: |
+  virtualenv/
