@@ -10,3 +10,6 @@ etc/salt/minion_id
 
 # python virtualenv
 virtualenv/
+
+# pytest caching
+__pycache__/
