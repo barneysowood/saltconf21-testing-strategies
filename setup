@@ -11,6 +11,12 @@ COMMAND="$(basename $0)"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 VENV="${REPO_ROOT}/virtualenv"
 
+# Check for optional virtualenv argument
+if [ -n "${1:-}" ]; then
+  VENV="${1}"
+  shift
+fi
+
 # Colour output
 echo_info () {
   tput setaf 2

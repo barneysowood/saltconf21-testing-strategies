@@ -1,0 +1,51 @@
+---
+
+default:
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-latest
+
+stages:
+  - build
+  - lint
+  - test
+
+variables:
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+
+docker_build:
+  stage: build
+  image: docker
+  services:
+    - docker:dind
+
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:main-latest || true
+
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      changes:
+        - .gitlab-ci.yml
+        - etc/Dockerfile
+        - etc/requirements.txt
+      when: on_success
+
+  script:
+    - "docker build --cache-from $CI_REGISTRY_IMAGE:latest \
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA \
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-latest \
+      -f etc/Dockerfile ."
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-latest
+
+lint:
+  stage: lint
+  script:
+    - /opt/virtualenv/bin/yamllint -c etc/yamllint .
+    - git ls-files -- '*.sls' | xargs /opt/virtualenv/bin/salt-lint
+
+pytest:
+  stage: test
+  script:
+    - /opt/virtualenv/bin/pytest --allow-state-apply
+        --exitfirst --verbose --failed-first
