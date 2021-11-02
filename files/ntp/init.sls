@@ -1,8 +1,10 @@
 # file: files/ntp/init.sls
 
+{%- set pkg_name = "ntp" %}
+
 install_ntp:
   pkg.installed:
-    - name: ntp
+    - name: {{ pkg_name }}
 
 configure_ntp:
   file.managed:
