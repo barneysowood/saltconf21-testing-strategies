@@ -1,0 +1,23 @@
+---
+
+name: pytest
+on: push
+
+jobs:
+
+  pytest:
+
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/barneysowood/saltconf21-testing-strategies
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: pytest
+        run: /opt/virtualenv/bin/pytest --allow-state-apply --exitfirst --verbose --failed-first

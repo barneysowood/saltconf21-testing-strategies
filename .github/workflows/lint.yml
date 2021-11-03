@@ -1,0 +1,25 @@
+---
+
+name: Lint
+on: push
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/barneysowood/saltconf21-testing-strategies
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: yamllint
+        run: /opt/virtualenv/bin/yamllint -f github -c etc/yamllint .
+
+      - name: salt-lint
+        run: git ls-files -- '*.sls' '*.jinja' '*.j2' '*.tmpl' '*.tst' | xargs /opt/virtualenv/bin/salt-lint -x 205
