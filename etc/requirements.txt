@@ -3,7 +3,7 @@
 # Python requirements for local development
 #
 
-salt==3003.3
+salt==${SALT_VER}
 yamllint
 salt-lint
 pytest

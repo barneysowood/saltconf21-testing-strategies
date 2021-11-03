@@ -14,6 +14,19 @@ variables:
 default:
   image: $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_REF_NAME-latest
 
+# Build matrix
+.build_matrix:
+  parallel: &build_matrix
+    matrix:
+      - OS_VER: '20.04'
+        SALT_VER:
+          - '3003.3'
+          - '3004'
+      - OS_VER: '21.04'
+        SALT_VER:
+          - '3003.3'
+          - '3004'
+
 docker_build:
   stage: build
   image: docker
@@ -33,12 +46,15 @@ docker_build:
       when: on_success
 
   script:
-    - "docker build --cache-from $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-latest \
+    - "docker build --build-arg SALT_VER=$SALT_VER --build-arg OS_VER=$OS_VER \
+      --cache-from $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-latest \
       --tag $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_SHORT_SHA \
       --tag $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_REF_NAME-latest \
       -f etc/Dockerfile ."
     - docker push $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_REF_NAME-latest  # yamllint disable-line rule:line-length
+
+  parallel: *build_matrix
 
 lint:
   stage: lint
@@ -46,8 +62,12 @@ lint:
     - /opt/virtualenv/bin/yamllint -c etc/yamllint .
     - git ls-files -- '*.sls' | xargs /opt/virtualenv/bin/salt-lint
 
+
 pytest:
   stage: test
+  image: $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_REF_NAME-latest
   script:
     - /opt/virtualenv/bin/pytest --allow-state-apply
         --exitfirst --verbose --failed-first
+
+  parallel: *build_matrix
