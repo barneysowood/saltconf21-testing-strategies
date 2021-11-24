@@ -1,6 +1,11 @@
 # Saltconf21 testing strategies
 
-Welcome to our salt states repository.
+Demonstration repository for my Saltconf21 talk "Strategies for testing Salt states"
+
+* [Talk recording](https://youtu.be/FI7RFE4sAHM)
+
+* [Slides and demos](https://sowood.co.uk/talks/saltconf21-testing-strategies/talk-web.html)
+
 
 ## Getting started
 
