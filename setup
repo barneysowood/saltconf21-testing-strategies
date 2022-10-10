@@ -10,7 +10,7 @@ set -o pipefail
 COMMAND="$(basename $0)"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 VENV="${REPO_ROOT}/virtualenv"
-SALT_VER="${SALT_VER:-3003.3}"
+SALT_VER="${SALT_VER:-3005.1}"
 
 # Check for optional virtualenv argument
 if [ -n "${1:-}" ]; then
