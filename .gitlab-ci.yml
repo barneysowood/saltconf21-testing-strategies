@@ -9,7 +9,7 @@ variables:
   DOCKER_HOST: tcp://docker:2376
   DOCKER_TLS_CERTDIR: "/certs"
   OS_VER: '20.04'
-  SALT_VER: '3003.3'
+  SALT_VER: '3005.1'
 
 default:
   image: $CI_REGISTRY_IMAGE:$OS_VER-$SALT_VER-$CI_COMMIT_REF_NAME-latest
@@ -20,12 +20,12 @@ default:
     matrix:
       - OS_VER: '20.04'
         SALT_VER:
-          - '3003.3'
-          - '3004'
-      - OS_VER: '21.04'
+          - '3004.2'
+          - '3005.1'
+      - OS_VER: '22.04'
         SALT_VER:
-          - '3003.3'
-          - '3004'
+          - '3004.2'
+          - '3005.1'
 
 docker_build:
   stage: build
